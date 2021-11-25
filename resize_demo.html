@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    
+    <!-- Note:- for why 'click(funtion(){})' not work but 'on("click",function(){})' works on resize -->
+    <!-- 
+    =>The plugin may be replacing the HTML which causes it to lose the event handlers assigned to those DOM elements.   
+      so Instead of 'event handlers'(ex.- click(funtion(){}) ), try or use 'delegating' (ex.- on("click",function(){}) ) the events to the document( 'which never gets removed.' )
+
+    =>(https://stackoverflow.com/questions/32041339/click-event-doesn-t-fire-after-browser-resize)
+-->
+<script>
+    var flag = true;
+    function checkDevice(){
+        if($(window).width() > 944){
+            $("body").removeClass("mob").addClass("desk");
+        }
+        else {
+            $("body").removeClass("desk").addClass("mob");   
+        }
+    }
+
+    function toggleNavbarMethod() {
+        if ($(window).innerWidth() > 944) {
+            if (flag) {
+                $("p").unbind("click"); //or we can also use $("p").off("click");
+                $("p").on("mouseenter mouseleave", function() {
+                    $(this).css("background-color", "pink");
+                });
+                flag = false;
+            }
+        } else {
+            if (!flag) {
+                $("p").unbind("mouseenter mouseleave"); //or we can also use $("p").off("mouseenter mouseleave");
+                $("p").on("click", function() {
+                    $(this).css("background-color", "pink");
+                });
+                flag = true;
+            }
+        }
+    }
+
+    $(document).ready(function() {
+        checkDevice();
+        if($("body").hasClass("desk")){
+            flag = true;
+        }   
+        if($("body").hasClass("mob")){
+            flag = false;
+        }
+        toggleNavbarMethod();
+
+
+        $(window).resize(function() {
+            checkDevice();
+            toggleNavbarMethod();
+        });
+    });
+</script>
+
+</head>
+
+<body>
+    <p>Click this paragraph to change its background color.</p>
+    <p>Click the button below and then click on this paragraph (the click event is removed).</p>
+</body>
+
+<!-- <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script> -->
+</html>
